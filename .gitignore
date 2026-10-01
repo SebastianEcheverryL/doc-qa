@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.aws-sam/
+.next/
+.env
+.env.*
+!.env.example
+PLAN.md

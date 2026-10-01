@@ -1,7 +1,3 @@
-export interface EmbeddingProvider {
-  embed(texts: string[]): Promise<number[][]>;
-}
-
 export interface LLMProvider {
   generate(prompt: string): Promise<string>;
 }
@@ -23,3 +19,10 @@ export interface VectorStore {
   query(vector: number[], topK: number): Promise<VectorMatch[]>;
   deleteByDoc(docId: string): Promise<void>;
 }
+
+export type EmbedKind = "document" | "query";
+
+export interface EmbeddingProvider {
+  embed(texts: string[], kind: EmbedKind): Promise<number[][]>;
+}
+

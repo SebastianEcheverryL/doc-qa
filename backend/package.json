@@ -5,7 +5,10 @@
   "scripts": {
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "smoke": "tsx --env-file=.env scripts/smoke.ts"
+    "smoke": "tsx --env-file=.env scripts/smoke.ts",
+    "try-gemini": "tsx --env-file=.env scripts/try-gemini.ts",
+    "try-pinecone": "tsx --env-file=.env scripts/try-pinecone.ts",
+    "try-rag": "tsx --env-file=.env scripts/try-rag.ts"
   },
   "keywords": [],
   "author": "",
