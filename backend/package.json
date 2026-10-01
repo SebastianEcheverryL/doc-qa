@@ -8,7 +8,8 @@
     "smoke": "tsx --env-file=.env scripts/smoke.ts",
     "try-gemini": "tsx --env-file=.env scripts/try-gemini.ts",
     "try-pinecone": "tsx --env-file=.env scripts/try-pinecone.ts",
-    "try-rag": "tsx --env-file=.env scripts/try-rag.ts"
+    "try-rag": "tsx --env-file=.env scripts/try-rag.ts",
+    "dev": "tsx --env-file=.env scripts/dev-server.ts"
   },
   "keywords": [],
   "author": "",
