@@ -86,7 +86,10 @@ export function createDevServer(): Server {
     }
 
     const result = await lambda(toEvent(req, await readBody(req)));
-    res.writeHead(result.statusCode ?? 200, Object.fromEntries(Object.entries(result.headers ?? {}).map(([k, v]) => [k, String(v)])));
+    res.writeHead(
+      result.statusCode ?? 200,
+      Object.fromEntries(Object.entries(result.headers ?? {}).map(([k, v]) => [k, String(v)]))
+    );
     res.end(result.body ?? "");
   });
 }

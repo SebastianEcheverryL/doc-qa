@@ -33,11 +33,13 @@ async function main(): Promise<void> {
   };
 
   console.log("1) upsert 3 chunks");
-  await store.upsert(await makeRecords([
-    "Full refund within 30 days with receipt. No refunds on digital goods.",
-    "Shipping takes 2 to 5 business days.",
-    "Support is available Monday to Friday.",
-  ]));
+  await store.upsert(
+    await makeRecords([
+      "Full refund within 30 days with receipt. No refunds on digital goods.",
+      "Shipping takes 2 to 5 business days.",
+      "Support is available Monday to Friday.",
+    ])
+  );
   await wait(10000);
   console.log("   chunks found by query:", await countOurs());
 

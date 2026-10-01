@@ -1,7 +1,6 @@
 import { GoogleGenAI } from "@google/genai";
 import type { EmbeddingProvider, EmbedKind, LLMProvider } from "./types";
 
-
 const BATCH_SIZE = 50;
 
 export class GeminiEmbeddings implements EmbeddingProvider {
@@ -21,11 +20,11 @@ export class GeminiEmbeddings implements EmbeddingProvider {
     for (let start = 0; start < texts.length; start += BATCH_SIZE) {
       const batch = texts.slice(start, start + BATCH_SIZE);
       const taskType = kind === "query" ? "RETRIEVAL_QUERY" : "RETRIEVAL_DOCUMENT";
-        const response = await this.ai.models.embedContent({
-            model: this.model,
-            contents: batch,
-            config: { outputDimensionality: this.dimension, taskType: taskType },
-        });
+      const response = await this.ai.models.embedContent({
+        model: this.model,
+        contents: batch,
+        config: { outputDimensionality: this.dimension, taskType: taskType },
+      });
       const embeddings = response.embeddings;
       if (!embeddings || embeddings.length !== batch.length) {
         throw new Error(`Expected ${batch.length} embeddings, got ${embeddings?.length ?? 0}`);
@@ -44,7 +43,10 @@ export class GeminiEmbeddings implements EmbeddingProvider {
 export class GeminiLLM implements LLMProvider {
   private readonly ai: GoogleGenAI;
 
-  constructor(apiKey: string, private readonly model: string) {
+  constructor(
+    apiKey: string,
+    private readonly model: string
+  ) {
     this.ai = new GoogleGenAI({ apiKey });
   }
 
@@ -58,8 +60,7 @@ export class GeminiLLM implements LLMProvider {
       config: { maxOutputTokens: 1024, temperature: 0.2, thinkingConfig: { thinkingBudget: 0 } },
     });
     const text = response.text;
-    if (!text) throw new Error("Gemini did not return any text"); 
+    if (!text) throw new Error("Gemini did not return any text");
     return text;
   }
 }
-

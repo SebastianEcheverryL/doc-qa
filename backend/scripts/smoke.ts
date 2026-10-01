@@ -1,10 +1,8 @@
 import { GoogleGenAI } from "@google/genai";
 import { Pinecone } from "@pinecone-database/pinecone";
 
-
 const EMBEDDING_MODEL = "gemini-embedding-001";
 const DIMENSION = 768;
-
 
 function requireEnv(name: string): string {
   const value = process.env[name];
@@ -13,7 +11,6 @@ function requireEnv(name: string): string {
   }
   return value;
 }
-
 
 async function embed(ai: GoogleGenAI, text: string): Promise<number[]> {
   const response = await ai.models.embedContent({
@@ -53,10 +50,8 @@ async function main(): Promise<void> {
   });
   console.log("Upsert OK");
 
- 
   await new Promise((resolve) => setTimeout(resolve, 5000));
 
-  
   const questionVector = await embed(ai, "Can I get a refund on a digital product?");
   const result = await index.query({
     vector: questionVector,
@@ -69,7 +64,6 @@ async function main(): Promise<void> {
     console.log(`  ${match.id}  score=${match.score?.toFixed(3)}`);
   }
 }
-
 
 main().catch((error: unknown) => {
   console.error("Falló el smoke test:", error);

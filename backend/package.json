@@ -1,20 +1,23 @@
 {
-  "name": "backend",
+  "name": "doc-qa-backend",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "Doc Q&A API: RAG over plain-text documents with Pinecone and Gemini, running on AWS Lambda.",
+  "private": true,
+  "license": "ISC",
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "dev": "tsx --env-file=.env scripts/dev-server.ts",
     "smoke": "tsx --env-file=.env scripts/smoke.ts",
     "try-gemini": "tsx --env-file=.env scripts/try-gemini.ts",
     "try-pinecone": "tsx --env-file=.env scripts/try-pinecone.ts",
-    "try-rag": "tsx --env-file=.env scripts/try-rag.ts",
-    "dev": "tsx --env-file=.env scripts/dev-server.ts"
+    "try-rag": "tsx --env-file=.env scripts/try-rag.ts"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
   "dependencies": {
     "@google/genai": "^2.24.0",
     "@pinecone-database/pinecone": "^9.0.0",
@@ -24,6 +27,7 @@
     "@types/aws-lambda": "^8.10.164",
     "@types/node": "^26.6.3",
     "esbuild": "^0.28.2",
+    "prettier": "^3.6.2",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2",
     "vitest": "^5.0.2"

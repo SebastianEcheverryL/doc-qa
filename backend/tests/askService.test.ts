@@ -1,6 +1,13 @@
 import { describe, it, expect } from "vitest";
 import { AskService, NO_INFO_ANSWER } from "../src/core/askService";
-import type { EmbeddingProvider, EmbedKind, LLMProvider, VectorMatch, VectorRecord, VectorStore } from "../src/providers/types";
+import type {
+  EmbeddingProvider,
+  EmbedKind,
+  LLMProvider,
+  VectorMatch,
+  VectorRecord,
+  VectorStore,
+} from "../src/providers/types";
 
 // Fakes that implement the provider interfaces and record what they receive.
 

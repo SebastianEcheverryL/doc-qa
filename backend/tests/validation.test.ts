@@ -27,8 +27,33 @@ describe("ingestRequestSchema", () => {
     expect(ingestRequestSchema.safeParse({}).success).toBe(false);
   });
 
-  it("rejects more than 20 documents", () => {
-    const documents = Array.from({ length: 21 }, (_, i) => doc({ id: `doc-${i}` }));
+  it("rejects more than 10 documents", () => {
+    const documents = Array.from({ length: 11 }, (_, i) => doc({ id: `doc-${i}` }));
+    expect(ingestRequestSchema.safeParse({ documents }).success).toBe(false);
+  });
+
+  it("rejects two documents with the same id", () => {
+    const result = ingestRequestSchema.safeParse({ documents: [doc(), doc({ title: "Another" })] });
+    expect(result.success).toBe(false);
+    expect(!result.success && result.error.issues[0]?.message).toBe("document ids must be unique");
+  });
+
+  it("accepts documents with different ids", () => {
+    expect(ingestRequestSchema.safeParse({ documents: [doc({ id: "a" }), doc({ id: "b" })] }).success).toBe(true);
+  });
+
+  it("rejects a request whose documents add up to more than the total limit", () => {
+    const big = (id: string) => doc({ id, content: "x".repeat(40_000) });
+    expect(ingestRequestSchema.safeParse({ documents: [big("a"), big("b"), big("c")] }).success).toBe(false);
+  });
+
+  it("accepts a request that is right at the total limit", () => {
+    const half = (id: string) => doc({ id, content: "x".repeat(30_000) });
+    expect(ingestRequestSchema.safeParse({ documents: [half("a"), half("b")] }).success).toBe(true);
+  });
+
+  it("rejects a request that is one character over the total limit", () => {
+    const documents = [doc({ id: "a", content: "x".repeat(30_000) }), doc({ id: "b", content: "x".repeat(30_001) })];
     expect(ingestRequestSchema.safeParse({ documents }).success).toBe(false);
   });
 

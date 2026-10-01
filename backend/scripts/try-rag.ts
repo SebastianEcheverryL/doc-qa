@@ -12,9 +12,22 @@ import { PineconeStore } from "../src/providers/pinecone";
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const documents = [
-  { id: "rag-demo-refund-policy", title: "Refund Policy", content: "Full refund within 30 days with receipt. No refunds on digital goods." },
-  { id: "rag-demo-shipping", title: "Shipping", content: "Orders ship within 2 business days. Standard delivery takes 3 to 5 days. Express delivery takes 1 to 2 days and costs 15 USD." },
-  { id: "rag-demo-support", title: "Support Hours", content: "Customer support is available Monday to Friday from 9am to 6pm UTC. Weekend support is not available." },
+  {
+    id: "rag-demo-refund-policy",
+    title: "Refund Policy",
+    content: "Full refund within 30 days with receipt. No refunds on digital goods.",
+  },
+  {
+    id: "rag-demo-shipping",
+    title: "Shipping",
+    content:
+      "Orders ship within 2 business days. Standard delivery takes 3 to 5 days. Express delivery takes 1 to 2 days and costs 15 USD.",
+  },
+  {
+    id: "rag-demo-support",
+    title: "Support Hours",
+    content: "Customer support is available Monday to Friday from 9am to 6pm UTC. Weekend support is not available.",
+  },
 ];
 
 const questions = [
@@ -44,11 +57,17 @@ async function main(): Promise<void> {
       const [vector] = await embeddings.embed([question], "query");
       if (!vector) throw new Error("no query vector");
       const raw = await store.query(vector, 3);
-      console.log("   raw scores:", raw.map((m) => `${m.metadata.docId.replace("rag-demo-", "")}=${m.score.toFixed(3)}`).join("  "));
+      console.log(
+        "   raw scores:",
+        raw.map((m) => `${m.metadata.docId.replace("rag-demo-", "")}=${m.score.toFixed(3)}`).join("  ")
+      );
 
       const result = await ask.ask(question, 3);
       console.log("   answer :", result.answer);
-      console.log("   sources:", result.sources.map((s) => `${s.docId} (${s.title})`));
+      console.log(
+        "   sources:",
+        result.sources.map((s) => `${s.docId} (${s.title})`)
+      );
     }
   } finally {
     console.log("\n== cleanup");

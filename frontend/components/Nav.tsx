@@ -14,11 +14,7 @@ export default function Nav() {
   return (
     <nav className="nav" aria-label="Main">
       {links.map((link) => (
-        <Link
-          key={link.href}
-          href={link.href}
-          aria-current={pathname === link.href ? "page" : undefined}
-        >
+        <Link key={link.href} href={link.href} aria-current={pathname === link.href ? "page" : undefined}>
           {link.label}
         </Link>
       ))}

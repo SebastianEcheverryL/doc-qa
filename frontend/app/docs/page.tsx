@@ -10,9 +10,7 @@ interface Row {
   content: string;
 }
 
-type Status =
-  | { kind: "success"; message: string }
-  | { kind: "error"; message: string; details: string[] };
+type Status = { kind: "success"; message: string } | { kind: "error"; message: string; details: string[] };
 
 const emptyRow = (key: number): Row => ({ key, id: "", title: "", content: "" });
 
@@ -63,7 +61,8 @@ export default function DocsPage() {
     <>
       <h1>Documents</h1>
       <p className="lead">
-        Add plain-text documents. Uploading a document with an existing id replaces the old version.
+        Add plain-text documents. Uploading a document with an existing id replaces the old version. Up to 10 documents
+        and 60,000 characters in total per upload.
       </p>
 
       <form onSubmit={handleSubmit} className="stack">
@@ -120,7 +119,7 @@ export default function DocsPage() {
         ))}
 
         <div className="actions">
-          <button type="button" onClick={addRow} disabled={loading || rows.length >= 20}>
+          <button type="button" onClick={addRow} disabled={loading || rows.length >= 10}>
             Add another document
           </button>
           <button type="submit" className="primary" disabled={loading}>

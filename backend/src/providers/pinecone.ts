@@ -5,8 +5,7 @@ const UPSERT_BATCH_SIZE = 100;
 const DELETE_BATCH_SIZE = 1000;
 
 export class PineconeStore implements VectorStore {
-    private readonly index: Index;
-
+  private readonly index: Index;
 
   constructor(apiKey: string, indexName: string) {
     const pinecone = new Pinecone({ apiKey });
@@ -25,26 +24,26 @@ export class PineconeStore implements VectorStore {
     const results = await this.index.query({
       vector,
       topK,
-      includeMetadata: true
-    })
-   const matches: VectorMatch[] = [];
-   for (const match of results.matches) {
-    if (match.score === undefined || match.metadata === undefined) {
+      includeMetadata: true,
+    });
+    const matches: VectorMatch[] = [];
+    for (const match of results.matches) {
+      if (match.score === undefined || match.metadata === undefined) {
         continue;
-    }
-    const docId = match.metadata.docId;
-    const title = match.metadata.title;
-    const chunkText = match.metadata.chunkText;
-    if ( typeof docId !== "string" || typeof title !== "string" || typeof chunkText !== "string") {
+      }
+      const docId = match.metadata.docId;
+      const title = match.metadata.title;
+      const chunkText = match.metadata.chunkText;
+      if (typeof docId !== "string" || typeof title !== "string" || typeof chunkText !== "string") {
         continue;
-    }
-    matches.push({
+      }
+      matches.push({
         id: match.id,
         score: match.score,
         metadata: { docId, title, chunkText },
-    });   
-   }
-   return matches;
+      });
+    }
+    return matches;
   }
 
   async deleteByDoc(docId: string): Promise<void> {
@@ -54,9 +53,9 @@ export class PineconeStore implements VectorStore {
     do {
       const response = await this.index.listPaginated({ prefix, paginationToken: token });
       token = response.pagination?.next;
-        for (const item of response.vectors ?? []) {
-             if (item.id !== undefined) ids.push(item.id);
-        }
+      for (const item of response.vectors ?? []) {
+        if (item.id !== undefined) ids.push(item.id);
+      }
     } while (token !== undefined);
     for (let start = 0; start < ids.length; start += DELETE_BATCH_SIZE) {
       const batch = ids.slice(start, start + DELETE_BATCH_SIZE);

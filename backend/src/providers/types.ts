@@ -25,4 +25,3 @@ export type EmbedKind = "document" | "query";
 export interface EmbeddingProvider {
   embed(texts: string[], kind: EmbedKind): Promise<number[][]>;
 }
-

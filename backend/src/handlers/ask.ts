@@ -5,7 +5,6 @@ import { parseBody } from "../http/request";
 import { askRequestSchema } from "../http/validation";
 import { getServices } from "./services";
 
-
 export function createAskHandler(getService: () => Pick<AskService, "ask">) {
   return async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyStructuredResultV2> => {
     try {
@@ -14,18 +13,17 @@ export function createAskHandler(getService: () => Pick<AskService, "ask">) {
         return badRequest("Invalid request", parsed.errors);
       }
       const service = getService();
-      try{
+      try {
         const result = await service.ask(parsed.data.question, parsed.data.topK);
         return ok(result);
       } catch (error) {
         console.error("ask: upstream failure", error);
         return badGateway();
-      }     
+      }
     } catch (error) {
       console.error("ask: internal error", error);
-      return internalError(); 
+      return internalError();
     }
   };
 }
 export const handler = createAskHandler(() => getServices().ask);
-

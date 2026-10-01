@@ -24,6 +24,10 @@ Parameters:
   LlmModel:
     Type: String
     Default: gemini-3.8-flash
+  MinScore:
+    Type: Number
+    Default: "0.65"
+    Description: Minimum similarity score (0 to 1) for a chunk to be used to answer a question.
   AllowedOrigin:
     Type: String
     Default: "*"
@@ -42,6 +46,7 @@ Globals:
         EMBEDDING_MODEL: !Ref EmbeddingModel
         EMBEDDING_DIMENSION: !Ref EmbeddingDimension
         LLM_MODEL: !Ref LlmModel
+        MIN_SCORE: !Ref MinScore
 
 Resources:
   HttpApi:
@@ -98,7 +103,6 @@ Resources:
         Minify: true
         Target: es2022
         Sourcemap: false
-
 
 Outputs:
   ApiUrl:

@@ -13,16 +13,16 @@ export function createIngestHandler(getService: () => Pick<IngestService, "inges
         return badRequest("Invalid request", parsed.errors);
       }
       const service = getService();
-      try{
+      try {
         const result = await service.ingest(parsed.data.documents);
         return ok(result);
       } catch (error) {
         console.error("ingest: upstream failure", error);
         return badGateway();
-      }     
+      }
     } catch (error) {
       console.error("ingest: internal error", error);
-      return internalError(); 
+      return internalError();
     }
   };
 }

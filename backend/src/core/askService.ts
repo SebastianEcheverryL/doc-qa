@@ -30,11 +30,11 @@ export class AskService {
       return { answer: NO_INFO_ANSWER, sources: [] };
     }
 
-    const chunks = relevantMatches.map((m) => ({
+    const chunks: Chunk[] = relevantMatches.map((m) => ({
       id: m.id,
       docId: m.metadata.docId,
       title: m.metadata.title,
-      text: m.metadata.chunkText
+      text: m.metadata.chunkText,
     }));
 
     const prompt = buildPrompt(question, chunks);
@@ -43,9 +43,9 @@ export class AskService {
     const seen = new Set<string>();
     const sources: SourceRef[] = [];
     for (const match of relevantMatches) {
-        if (seen.has(match.metadata.docId)) continue;
-        seen.add(match.metadata.docId);
-        sources.push({ docId: match.metadata.docId, title: match.metadata.title });
+      if (seen.has(match.metadata.docId)) continue;
+      seen.add(match.metadata.docId);
+      sources.push({ docId: match.metadata.docId, title: match.metadata.title });
     }
     return { answer, sources };
   }
