@@ -1,0 +1,106 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: Doc Q&A API - HTTP API in front of two Lambdas (ingest and ask) that implement RAG with Pinecone and Gemini.
+
+Parameters:
+  GeminiApiKey:
+    Type: String
+    NoEcho: true
+    Description: Google AI Studio API key (embeddings and LLM).
+  PineconeApiKey:
+    Type: String
+    NoEcho: true
+    Description: Pinecone API key.
+  PineconeIndex:
+    Type: String
+    Default: doc-qa
+    Description: Name of the Pinecone index (serverless, cosine, dimension = EmbeddingDimension).
+  EmbeddingModel:
+    Type: String
+    Default: gemini-embedding-001
+  EmbeddingDimension:
+    Type: Number
+    Default: 768
+  LlmModel:
+    Type: String
+    Default: gemini-3.8-flash
+  AllowedOrigin:
+    Type: String
+    Default: "*"
+    Description: Origin allowed by CORS. Use the frontend URL in production.
+
+Globals:
+  Function:
+    Runtime: nodejs22.x
+    Architectures: [arm64]
+    MemorySize: 512
+    Environment:
+      Variables:
+        GEMINI_API_KEY: !Ref GeminiApiKey
+        PINECONE_API_KEY: !Ref PineconeApiKey
+        PINECONE_INDEX: !Ref PineconeIndex
+        EMBEDDING_MODEL: !Ref EmbeddingModel
+        EMBEDDING_DIMENSION: !Ref EmbeddingDimension
+        LLM_MODEL: !Ref LlmModel
+
+Resources:
+  HttpApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      CorsConfiguration:
+        AllowOrigins: [!Ref AllowedOrigin]
+        AllowMethods: [POST, OPTIONS]
+        AllowHeaders: [Content-Type]
+      DefaultRouteSettings:
+        ThrottlingBurstLimit: 10
+        ThrottlingRateLimit: 5
+
+  IngestFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: POST /ingest - chunk, embed and upsert documents into Pinecone.
+      CodeUri: .
+      Handler: ingest.handler
+      Timeout: 29
+      Events:
+        Ingest:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /ingest
+            Method: POST
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        EntryPoints: [src/handlers/ingest.ts]
+        Minify: true
+        Target: es2022
+        Sourcemap: false
+
+  AskFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: POST /ask - ask a question about the documents.
+      CodeUri: .
+      Handler: ask.handler
+      Timeout: 15
+      Events:
+        Ask:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /ask
+            Method: POST
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        EntryPoints: [src/handlers/ask.ts]
+        Minify: true
+        Target: es2022
+        Sourcemap: false
+
+
+Outputs:
+  ApiUrl:
+    Description: Base URL of the API (use it as NEXT_PUBLIC_API_URL in the frontend).
+    Value: !Sub "https://${HttpApi}.execute-api.${AWS::Region}.amazonaws.com"

@@ -6,3 +6,5 @@ dist/
 .env.*
 !.env.example
 PLAN.md
+# SAM deploy settings (may contain stack-specific values)
+samconfig.toml
