@@ -52,7 +52,10 @@ export class GeminiLLM implements LLMProvider {
     const response = await this.ai.models.generateContent({
       model: this.model,
       contents: prompt,
-      config: { maxOutputTokens: 512, temperature: 0.2 },
+      // Thinking tokens count against maxOutputTokens: with thinking on, a 512-token limit
+      // can be spent almost entirely on reasoning and leave a cut-off answer. RAG answers
+      // only need to restate the context, so thinking is turned off.
+      config: { maxOutputTokens: 1024, temperature: 0.2, thinkingConfig: { thinkingBudget: 0 } },
     });
     const text = response.text;
     if (!text) throw new Error("Gemini did not return any text"); 
